@@ -190,9 +190,25 @@ test("public contact is saved and readable from administrator Inbox", async ({
 test("assistant handles missing key and contact confirmation without Gemini", async ({
   page,
 }) => {
+  let releaseHistory;
+  const historyReady = new Promise((resolve) => {
+    releaseHistory = resolve;
+  });
+  await page.route("**/api/chat/history", async (route) => {
+    const response = await route.fetch();
+    await historyReady;
+    await route.fulfill({ response });
+  });
   await page.goto("/");
   await page.getByRole("button", { name: "Open Meridian assistant" }).click();
   const panel = page.getByRole("region", { name: "Meridian assistant" });
+  await expect(
+    panel.getByRole("textbox", { name: "Message Meridian" }),
+  ).toBeDisabled();
+  await expect(
+    panel.getByRole("button", { name: "Send message" }),
+  ).toBeDisabled();
+  releaseHistory();
   await panel
     .getByRole("textbox", { name: "Message Meridian" })
     .fill("Help me get started");

@@ -22,7 +22,7 @@ export default function ChatWidget() {
     [actions, setActions] = useState([]),
     [input, setInput] = useState(""),
     [busy, setBusy] = useState(false),
-    [historyLoading, setHistoryLoading] = useState(false),
+    [historyLoading, setHistoryLoading] = useState(true),
     [error, setError] = useState(""),
     [confirming, setConfirming] = useState(""),
     [configured, setConfigured] = useState(config.chatConfigured),
@@ -101,7 +101,7 @@ export default function ChatWidget() {
   };
   const send = async (text = input) => {
     const message = text.trim();
-    if (!message || busy) return;
+    if (!message || busy || historyLoading) return;
     setInput("");
     setError("");
     setBusy(true);
@@ -212,6 +212,7 @@ export default function ChatWidget() {
   };
   const prepareContact = async (e) => {
     e.preventDefault();
+    if (historyLoading || busy || contactBusy) return;
     const data = Object.fromEntries(new FormData(e.currentTarget));
     setContactBusy(true);
     setError("");
@@ -289,7 +290,7 @@ export default function ChatWidget() {
                 key={key}
                 className={mode === key ? "active" : ""}
                 onClick={() => setMode(key)}
-                disabled={busy}
+                disabled={busy || historyLoading}
               >
                 {label}
               </button>
@@ -320,7 +321,11 @@ export default function ChatWidget() {
             {!messages.length && mode !== "contact" && (
               <div className="chat-suggestions">
                 {suggestions.map((s) => (
-                  <button key={s} disabled={busy} onClick={() => send(s)}>
+                  <button
+                    key={s}
+                    disabled={busy || historyLoading}
+                    onClick={() => send(s)}
+                  >
                     {s} <Icon name="ArrowUpRight" size={12} />
                   </button>
                 ))}
@@ -463,7 +468,10 @@ export default function ChatWidget() {
                     Website
                     <input name="website" tabIndex={-1} autoComplete="off" />
                   </label>
-                  <button className="btn primary" disabled={contactBusy}>
+                  <button
+                    className="btn primary"
+                    disabled={contactBusy || historyLoading}
+                  >
                     {contactBusy ? "Preparing…" : "Review message"}
                     <Icon name="ArrowRight" size={15} />
                   </button>
@@ -497,6 +505,7 @@ export default function ChatWidget() {
                 <textarea
                   ref={chatInput}
                   aria-label="Message Meridian"
+                  disabled={historyLoading}
                   placeholder={
                     mode === "help"
                       ? "Ask how anything works…"
@@ -516,7 +525,7 @@ export default function ChatWidget() {
                 <button
                   className="icon-button"
                   aria-label="Send message"
-                  disabled={busy || !input.trim()}
+                  disabled={busy || historyLoading || !input.trim()}
                 >
                   <Icon name="Send" size={16} />
                 </button>

@@ -25,6 +25,12 @@ const report = {
   checkedAt: new Date().toISOString(),
   cases: [],
 };
+const selection = process.argv
+  .find((arg) => arg.startsWith("--case="))
+  ?.slice(7);
+const reportPath = selection
+  ? "artifacts/live-ai-targeted-report.json"
+  : "artifacts/live-ai-report.json";
 const send = (agent, path, body) =>
   agent.post(path).set("X-Requested-With", "Meridian").send(body);
 const events = (response, name) =>
@@ -64,6 +70,7 @@ try {
     await db.user.findFirst({ where: { role: "ADMIN" } }),
   );
   const run = async (name, agent, message, mode, check) => {
+    if (selection && !name.includes(selection)) return;
     calls.length = 0;
     // Pace real provider requests so verification fits low free-tier request quotas.
     if (report.cases.length)
@@ -108,7 +115,10 @@ try {
     admin,
     "In four short steps, explain how to create an invoice, post it, and record a partial payment in Meridian.",
     "help",
-    async (_r, answer) => assert.match(answer, /draft|post|payment/i),
+    async (_r, answer) => {
+      assert.match(answer, /draft|post|payment/i);
+      assert.doesNotMatch(answer, /confirmation card|click\s+\*?\*?Confirm/i);
+    },
   );
   await run(
     "today sales uses real ERP data",
@@ -270,19 +280,13 @@ try {
       assert.equal(await db.contactMessage.count(), contactsBefore + 1);
     },
   );
-  await writeFile(
-    "artifacts/live-ai-report.json",
-    JSON.stringify(report, null, 2),
-  );
+  await writeFile(reportPath, JSON.stringify(report, null, 2));
   process.stdout.write(
     `Live Gemini checks passed: ${report.cases.length}. Only the isolated test database was changed.\n`,
   );
 } catch (error) {
   report.failure = error.message;
-  await writeFile(
-    "artifacts/live-ai-report.json",
-    JSON.stringify(report, null, 2),
-  );
+  await writeFile(reportPath, JSON.stringify(report, null, 2));
   process.stderr.write(`Live AI check failed: ${error.message}\n`);
   process.exitCode = 1;
 } finally {

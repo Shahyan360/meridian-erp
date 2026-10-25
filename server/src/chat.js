@@ -180,7 +180,10 @@ export function registerChat(
             const parts = [];
             for await (const part of provider({
               contents,
-              system,
+              system:
+                mode === "help"
+                  ? `${system}\nAUTHORITATIVE MANUAL UI REFERENCE: To invoice and take a partial payment: (1) Sales > Add sales order, select customer/products and use Save draft. (2) In the draft row choose Post, review the dialog, then Post order. (3) In the posted row choose Pay, enter the amount/method and submit Record payment. This immediately records payment and refreshes the balance. There is NO assistant confirmation card after submitting Record payment. In manual workflow explanations do not mention chat proposal cards or a button named Confirm. Those belong only to assistant tool proposals, not the manual payment form.`
+                  : system,
               tools,
               signal: controller.signal,
             })) {
