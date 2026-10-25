@@ -2,6 +2,10 @@
 
 A connected workspace for sales, purchasing, inventory, relationships, people, accounting, and school administration. Built directly on the original React/Vite, Express, Prisma, and MySQL stack, with a self-contained SQLite demo.
 
+[Open the website](https://meridian-erp-khalidshahyan0-1999s-projects.vercel.app) · [Public source](https://github.com/Shahyan360/meridian-erp) · [Passing release checks](https://github.com/Shahyan360/meridian-erp/actions/runs/40169206227)
+
+The hosted workspace uses persistent PostgreSQL and a private owner account. Demo logins below apply to local demo installations only; production does not expose demo accounts. Gemini and Gmail notifications are configured as private server environment variables.
+
 ## Start here
 
 Use Node.js **24** and npm **11** (the versions used for verification). Run every command from this folder:
@@ -179,7 +183,7 @@ server/src/lib/         Security, validation, domain operations, accounting,
 server/src/chat.js      Streaming chat, history, proposals/confirmation
 server/src/seed.js      Idempotent initialization and fictional demo data
 shared/catalog.js      Shared module/field metadata
-prisma/schema.prisma   Canonical MySQL schema; demo schema generated from it
+prisma/schema.prisma   Canonical MySQL schema; SQLite/PostgreSQL schemas generated from it
 scripts/               Database setup and isolated browser-test server
 server/test/, tests/   API and browser/accessibility tests
 PLAN.md                Audit, decisions, gates, and verification evidence
