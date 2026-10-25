@@ -65,15 +65,23 @@ try {
   );
   const run = async (name, agent, message, mode, check) => {
     calls.length = 0;
+    // Pace real provider requests so verification fits low free-tier request quotas.
+    if (report.cases.length)
+      await new Promise((resolve) => setTimeout(resolve, 10000));
     const start = Date.now();
     let response, errors;
     for (let attempt = 0; attempt < 3; attempt++) {
       response = await send(agent, "/api/chat", { message, mode });
       errors = events(response, "error");
-      if (!errors.some((e) => /rate limit/i.test(e.error)) || attempt === 2)
+      if (
+        !errors.some((e) =>
+          /rate limit|too long|temporarily unavailable/i.test(e.error),
+        ) ||
+        attempt === 2
+      )
         break;
       process.stdout.write(
-        "Provider rate limit: waiting 30 seconds before retry.\n",
+        "Provider temporarily unavailable: waiting 30 seconds before retry.\n",
       );
       await new Promise((resolve) => setTimeout(resolve, 30000));
     }

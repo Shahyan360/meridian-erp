@@ -13,7 +13,7 @@
     "build": "npm --workspace client run build",
     "start": "node server/src/index.js",
     "test": "node scripts/test-api.mjs",
-    "test:e2e": "playwright test",
+    "test:e2e": "node scripts/test-browser.mjs",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -22,7 +22,7 @@
     "start:vps": "node scripts/vps-start.mjs",
     "test:ai:live": "node scripts/test-ai-live.mjs",
     "test:postgres": "node scripts/test-postgres.mjs",
-    "test:e2e:all": "node scripts/test-browser.mjs",
+    "test:e2e:all": "node scripts/test-browser.mjs --all",
     "test:email:live": "node scripts/test-email-live.mjs"
   },
   "devDependencies": {
