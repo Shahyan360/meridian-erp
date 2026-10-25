@@ -1,0 +1,14 @@
+.git
+.env
+.env.*
+!.env.example
+node_modules
+**/node_modules
+generated
+client/dist
+artifacts
+test-results
+playwright-report
+prisma/*.db*
+.vercel
+.vscode

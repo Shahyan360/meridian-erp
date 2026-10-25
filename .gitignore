@@ -1,0 +1,26 @@
+node_modules
+# Keep environment variables out of version control
+.env
+
+.env.*
+!.env.example
+client/dist/
+generated/
+prisma/demo.prisma
+prisma/postgres.prisma
+.vercel/
+.vscode/
+.agents/
+skills-lock.json
+coverage/
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+test-results/
+playwright-report/
+artifacts/
+
+/generated/prisma
+
+.vercel

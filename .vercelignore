@@ -1,0 +1,14 @@
+.env
+.env.*
+!.env.example
+.git
+.vscode
+.agents
+node_modules
+generated
+artifacts
+test-results
+playwright-report
+coverage
+prisma/*.db*
+client/dist

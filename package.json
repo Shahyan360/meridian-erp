@@ -1,0 +1,56 @@
+{
+  "name": "meridian-erp",
+  "version": "1.0.0",
+  "description": "An integrated business and school operations workspace",
+  "scripts": {
+    "dev": "concurrently -k \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "npm --workspace server run dev",
+    "dev:client": "npm --workspace client run dev",
+    "setup": "node scripts/setup.mjs",
+    "db:generate": "node scripts/database.mjs generate",
+    "db:push": "node scripts/database.mjs push",
+    "db:seed": "node server/src/seed.js",
+    "build": "npm --workspace client run build",
+    "start": "node server/src/index.js",
+    "test": "node scripts/test-api.mjs",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "check": "npm run lint && npm run format:check && npm test && npm run build",
+    "build:cloud": "node scripts/cloud-build.mjs",
+    "start:vps": "node scripts/vps-start.mjs",
+    "test:ai:live": "node scripts/test-ai-live.mjs",
+    "test:postgres": "node scripts/test-postgres.mjs",
+    "test:e2e:all": "node scripts/test-browser.mjs",
+    "test:email:live": "node scripts/test-email-live.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.56.0",
+    "concurrently": "^10.0.5",
+    "embedded-postgres": "^18.4.0-beta.17",
+    "eslint": "^10.9.0",
+    "globals": "^17.11.0",
+    "prettier": "^3.9.6",
+    "prisma": "^6.19.3",
+    "supertest": "^7.1.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.3"
+  },
+  "private": true,
+  "workspaces": [
+    "client",
+    "server"
+  ],
+  "engines": {
+    "node": "24.x"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0",
+    "shell-quote": "^1.11.0"
+  },
+  "type": "module"
+}

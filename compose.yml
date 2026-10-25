@@ -1,0 +1,36 @@
+services:
+  meridian:
+    build:
+      context: .
+      args:
+        DATABASE_MODE: ${DATABASE_MODE:-demo}
+    env_file: .env.production
+    environment:
+      NODE_ENV: production
+      DEMO_MODE: "false"
+      TRUST_PROXY: "1"
+      DEMO_DATABASE_URL: file:/data/meridian.db
+    volumes:
+      - meridian_data:/data
+    ports:
+      - 127.0.0.1:4000:4000
+    restart: unless-stopped
+    mem_limit: 512m
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      SITE_HOST: ${SITE_HOST:?Set SITE_HOST to your domain}
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - meridian
+    restart: unless-stopped
+volumes:
+  meridian_data:
+  caddy_data:
+  caddy_config:

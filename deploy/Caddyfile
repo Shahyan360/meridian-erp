@@ -1,0 +1,6 @@
+{$SITE_HOST} {
+  encode zstd gzip
+  reverse_proxy meridian:4000 {
+    flush_interval -1
+  }
+}
